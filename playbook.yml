@@ -1,0 +1,42 @@
+---
+- name: Configure NAS Infrastructure
+  hosts: nas
+  become: yes
+
+  tasks:
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Ensure Docker is installed
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure NAS shared directory exists
+      file:
+        path: /srv/nas/shared
+        state: directory
+        owner: nasuser
+        group: nasuser
+        mode: '0777'
+
+    - name: Ensure Nginx container is running
+      community.docker.docker_container:
+        name: iac-website
+        image: nginx:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:80"
