@@ -27,7 +27,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.NAS_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.NAS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook
         run: |
@@ -35,4 +34,4 @@ jobs:
             -i "${{ secrets.NAS_HOST }}," \
             -u ${{ secrets.NAS_USER }} \
             --private-key ~/.ssh/deploy_key \
-            --ssh-extra-args="-o StrictHostKeyChecking=no"
+            --ssh-extra-args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
