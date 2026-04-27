@@ -40,3 +40,11 @@
         restart_policy: always
         ports:
           - "8080:80"
+
+   - name: Ensure website directory exists with correct permissions
+      file:
+        path: /srv/website
+        state: directory
+        owner: nasuser
+        group: nasuser
+        mode: '0755'

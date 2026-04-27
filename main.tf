@@ -15,13 +15,17 @@ resource "docker_image" "nginx" {
 }
 
 resource "docker_container" "website" {
-  image = docker_image.nginx.image_id
-  name  = "iac-website"
+  image   = docker_image.nginx.image_id
+  name    = "iac-website"
+  restart = "always"
 
   ports {
     internal = 80
     external = 8080
   }
 
-  restart = "always"
+  volumes {
+    host_path      = "/srv/website"
+    container_path = "/usr/share/nginx/html"
+  }
 }
